@@ -1,4 +1,5 @@
 use clap::{Args, Parser, Subcommand};
+use serde::{Deserialize, Serialize};
 
 #[derive(Parser, Debug)]
 pub struct MainCliArgs {
@@ -21,6 +22,12 @@ pub struct MainCliArgs {
     /// Verbose mode. Print raw server responses
     #[clap(long, global = true)]
     pub verbose: bool,
+}
+
+impl MainCliArgs {
+    pub fn get_api_base(&self) -> String {
+        format!("http://{}:{}/api/v1", self.ip, self.port)
+    }
 }
 
 #[derive(Subcommand, Debug)]
@@ -51,7 +58,7 @@ pub enum UserCommand {
     Keys(UserKeysArgs),
 }
 
-#[derive(Args, Debug)]
+#[derive(Args, Debug, Serialize)]
 pub struct UserCreateArgs {
     /// Displayed name of account
     #[clap(short, long)]
@@ -63,7 +70,7 @@ pub struct UserCreateArgs {
 
     /// Password
     #[clap(short, long)]
-    pub pwd: String,
+    pub password: String,
 }
 
 #[derive(Args, Debug)]
@@ -73,10 +80,11 @@ pub struct UserViewArgs {
     pub id: i32,
 }
 
-#[derive(Args, Debug)]
+#[derive(Args, Debug, Serialize)]
 pub struct UserChangeArgs {
     /// ID of requested user to change
     #[clap(short, long)]
+    #[serde(skip_serializing)]
     pub id: i32,
 
     /// New email for user. Can be skipped
@@ -85,7 +93,7 @@ pub struct UserChangeArgs {
 
     /// New password for user
     #[clap(short, long)]
-    pub pwd: Option<String>,
+    pub password: Option<String>,
 }
 
 #[derive(Args, Debug)]
