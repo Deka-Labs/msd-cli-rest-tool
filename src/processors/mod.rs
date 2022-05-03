@@ -3,6 +3,7 @@ use serde_json::Value;
 
 use crate::cli::MainCliArgs;
 
+mod keys;
 mod users;
 
 pub enum ProcessorErrorStatus {
@@ -20,9 +21,14 @@ pub trait Processor {
 
 pub fn init_processors() -> Vec<Box<dyn Processor>> {
     vec![
+        // Users
         Box::new(users::UserCreateProcessor {}),
         Box::new(users::UserViewProcessor {}),
         Box::new(users::UserChangeProcessor {}),
+        // Keys
+        Box::new(keys::KeysCreateProcessor {}),
+        Box::new(keys::KeysViewProcessor {}),
+        Box::new(keys::KeysRevokeProcessor {}),
         // MUST BE ALWAYS LAST
         Box::new(NotProcessedCommand {}),
     ]
