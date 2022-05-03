@@ -1,5 +1,5 @@
 use clap::{Args, Parser, Subcommand};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 #[derive(Parser, Debug)]
 pub struct MainCliArgs {
@@ -182,7 +182,7 @@ pub struct CacheCreateArgs {
     pub hint: String,
 }
 
-#[derive(Args, Debug)]
+#[derive(Args, Debug, Serialize)]
 pub struct CacheFindArgs {
     /// Filter user id
     #[clap(long)]
@@ -203,6 +203,27 @@ pub struct CacheFindArgs {
     pub max_long: Option<f64>,
 }
 
+#[derive(Serialize)]
+pub struct CacheFindArgsServer {
+    pub user_id: Option<i32>,
+    pub min_lat: Option<f64>,
+    pub max_lat: Option<f64>,
+    pub min_long: Option<f64>,
+    pub max_long: Option<f64>,
+}
+
+impl CacheFindArgsServer {
+    pub fn new(o: &CacheFindArgs) -> Self {
+        Self {
+            user_id: o.user,
+            max_lat: o.max_lat,
+            max_long: o.max_long,
+            min_lat: o.min_lat,
+            min_long: o.min_long,
+        }
+    }
+}
+
 #[derive(Args, Debug)]
 pub struct CacheViewArgs {
     /// ID of cache
@@ -210,10 +231,11 @@ pub struct CacheViewArgs {
     pub id: i32,
 }
 
-#[derive(Args, Debug)]
+#[derive(Args, Debug, Serialize)]
 pub struct CacheChangeArgs {
     /// ID of cache
     #[clap(short, long)]
+    #[serde(skip_serializing)]
     pub id: i32,
 
     /// new latitide

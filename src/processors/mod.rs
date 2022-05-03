@@ -3,6 +3,7 @@ use serde_json::Value;
 
 use crate::cli::MainCliArgs;
 
+mod caches;
 mod keys;
 mod users;
 
@@ -29,6 +30,12 @@ pub fn init_processors() -> Vec<Box<dyn Processor>> {
         Box::new(keys::KeysCreateProcessor {}),
         Box::new(keys::KeysViewProcessor {}),
         Box::new(keys::KeysRevokeProcessor {}),
+        // Caches
+        Box::new(caches::CacheCreateProcessor {}),
+        Box::new(caches::CacheFindProcessor {}),
+        Box::new(caches::CacheViewProcessor {}),
+        Box::new(caches::CacheChangeProcessor {}),
+        Box::new(caches::CacheDeleteProcessor {}),
         // MUST BE ALWAYS LAST
         Box::new(NotProcessedCommand {}),
     ]
